@@ -160,14 +160,7 @@ jobs:
           name: Configure server
           command: |
             cd .circleci/ansible
-            exit 1
-      - destroy-if-failure
-- run:
-          name: Configure server
-          command: |
-            cd .circleci/ansible
             ansible-playbook -i inventory.txt configure-server.yml
-      
 
 workflows:
   default:
