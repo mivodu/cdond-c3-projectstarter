@@ -230,20 +230,20 @@ jobs:
       # Here's where you will add some code to rollback on failure 
       # - destroy-environment-on-fail
       # - revert-migrations
-  deploy-backend:
-    docker:
+  #deploy-backend:
+  #  docker:
       # Docker image here that supports Ansible
-    steps:
+  #  steps:
       # Checkout code from git
       # Add ssh keys with fingerprint
       # attach workspace
-      - run:
-          name: Install dependencies
-          command: |
+  #    - run:
+  #        name: Install dependencies
+  #        command: |
             # your code here
-      - run:
-          name: Deploy backend
-          command: |
+  #    - run:
+  #        name: Deploy backend
+  #        command: |
             # your code here
       # Here's where you will add some code to rollback on failure  
 
