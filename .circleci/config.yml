@@ -163,16 +163,16 @@ jobs:
       - destroy-if-failure
   run-migrations:
     docker:
-      - image: cimg/node:13.8.0
+      - image: circleci/node:13.8.0
     steps:
       - checkout
       - restore_cache:
           keys: [backend-build]
-      - run:
-          name: Install dependencies
-          command: |
-            sudo apt update
-            sudo apt install -y awscli
+      #- run:
+      #    name: Install dependencies
+      #    command: |
+      #      sudo apt update
+      #      sudo apt install -y awscli
       - run:
           name: Run migrations
           command: |
@@ -187,6 +187,11 @@ jobs:
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
               curl https://kvdb.io/VQTw3DojLtJnPDvyMbJvym/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+            elif grep -q "No migrations are pending" ~/project/backend/migrations_dump.txt
+            then
+              curl https://kvdb.io/VQTw3DojLtJnPDvyMbJvym/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+            else
+              exit 1
             fi
       - persist_to_workspace:
           root: ~/
