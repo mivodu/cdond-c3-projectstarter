@@ -3,28 +3,45 @@
 - name: Create backend directory
   become: true
   file:
-    path: ~/backend
+    path: /home/ubuntu/backend
     state: directory
 
 - name: Copy and extract backend files
   become: true
   unarchive:
-    src: artifact.tar.gz
-    dest: ~/backend
+    src: ../../artifact.tar.gz
+    dest: /home/ubuntu/backend
+
+- name: Project files
+  become: true
+  shell: ls /home/ubuntu/backend
+  args:
+    executable: /bin/bash
+  register: after_unarchiving
 
 - name: Install npm
   become: true
   shell: |
-    cd ~/backend
+    echo ${USER}
+    cd /home/ubuntu/backend
     npm install
+  args:
+    executable: /bin/bash
   register: start_backend_results
 
 - name: Start pm2
   shell: |
-    cd ~/backend
+    echo ${USER}
+    cd /home/ubuntu/backend
     pm2 stop default
     pm2 start npm -- start
+  args:
+    executable: /bin/bash
   register: pm2_start_results
+
+- name: Results after unarchiving
+  debug:
+    msg: "{{ after_unarchiving.stdout_lines }}"
 
 - name: Show results npm installs
   debug:
