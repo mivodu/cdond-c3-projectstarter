@@ -1,0 +1,35 @@
+---
+
+- name: Create backend directory
+  become: true
+  file:
+    path: ~/backend
+    state: directory
+
+- name: Copy and extract backend files
+  become: true
+  unarchive:
+    src: artifact.tar.gz
+    dest: ~/backend
+
+- name: Install npm
+  become: true
+  shell: |
+    cd ~/backend
+    npm install
+  register: start_backend_results
+
+- name: Start pm2
+  shell: |
+    cd ~/backend
+    pm2 stop default
+    pm2 start npm -- start
+  register: pm2_start_results
+
+- name: Show results npm installs
+  debug:
+    msg: "{{ start_backend_results.stdout_lines }}"
+
+- name: Show results after app pm2 starts
+  debug:
+    msg: "{{ pm2_start_results.stdout_lines }}"
