@@ -389,7 +389,7 @@ jobs:
           command: |
             export OldWorkflowID=$(cat ~/project/OldWorkflowID.txt)
             echo $OldWorkflowID
-            if [[ $OldWorkflowID != << pipeline.parameters.workflow_id >>]]
+            if [[ "$OldWorkflowID" != "udapeople-<< pipeline.parameters.workflow_id >>" ]]
             then
               echo "-----Delete Old Stack------"
               aws s3 rm "s3://udapeople-${OldWorkflowID:10:12}" --recursive
