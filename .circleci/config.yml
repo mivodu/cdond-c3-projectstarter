@@ -348,15 +348,47 @@ jobs:
       - run:
           name: Update cloudfront distribution
           command: |
+            export OldWorkflowID=$(aws cloudformation list-exports 
+              --query "Exports[?Name==\`WorkflowID\`].Value" \
+              --no-paginate 
+              --output text)
+            echo $OldWorkflowID > ~/project/OldWorkflowID.txt
+            echo "Old workflow id: $OldWorkflowID"
+
             aws cloudformation deploy \
               --template-file .circleci/files/cloudfront.yml \
               --stack-name InitialStack \
-              --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=udapeople
+            echo "New workflow id: << pipeline.parameters.workflow_id >>"
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/OldWorkflowID.txt
       #- destroy-environment:
       #    workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
       #- revert-migrations:
       #    workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+
+  cleanup:
+    docker:
+      # Docker image here
+    steps:
+      # Checkout code from git
+      - run:
+          name: Get old stack workflow id
+          command: |
+            # your code here
+            export OldWorkflowID="the id here"
+            export STACKS=[] #put the list of stacks here
+      - run:
+          name: Remove old stacks and files
+          command: |
+            if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
+            then
+              # your code here
+            fi
+
 
 workflows:
   default:
