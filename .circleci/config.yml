@@ -18,12 +18,15 @@ commands:
           when: on_fail
           command: |
             SUCCESS=$(curl --insecure  https://kvdb.io/VQTw3DojLtJnPDvyMbJvym/migration_<< parameters.workflow_id >>)
+            echo "SUCCESS = ${SUCCESS}"
             if (( $SUCCESS == 1 ))
             then
+                echo "Starting to revert migration"
                 cd ~/project/backend
                 npm install
                 npm run migration:revert
             fi  
+            echo "Finished to revert migration"
   destroy-environment:
     description: Destroy backend and frontend cloudformation stacks given a workflow ID.
     parameters:
@@ -331,10 +334,10 @@ jobs:
             else
               return 1
             fi
-      - destroy-environment:
-          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
-      - revert-migrations:
-          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+      #- destroy-environment:
+      #    workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+      #- revert-migrations:
+      #    workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
   cloudfront-update:
     docker:
