@@ -354,7 +354,6 @@ jobs:
               --output text)
             echo $OldWorkflowID > ~/project/OldWorkflowID.txt
             echo "Old workflow id: $OldWorkflowID"
-
             aws cloudformation deploy \
               --template-file .circleci/files/cloudfront.yml \
               --stack-name InitialStack \
@@ -372,23 +371,25 @@ jobs:
 
   cleanup:
     docker:
-      # Docker image here
+      - image: amazon/aws-cli
     steps:
-      # Checkout code from git
-      - run:
-          name: Get old stack workflow id
-          command: |
-            # your code here
-            export OldWorkflowID="the id here"
-            export STACKS=[] #put the list of stacks here
+      -checkout
+      - attach_workspace:
+          at: ~/
       - run:
           name: Remove old stacks and files
           command: |
-            if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
+            export OldWorkflowID=$(cat ~/project/OldWorkflowID.txt)
+            echo $OldWorkflowID
+            if [[ $OldWorkflowID != << pipeline.parameters.workflow_id >>]]
             then
-              # your code here
+              echo "-----Delete Old Stack------"
+              aws s3 rm "s3://udapeople-${OldWorkflowID:10:12}" --recursive
+              aws cloudformation delete-stack --stack-name udapeople-backend-${OldWorkflowID:10:12}
+              aws cloudformation delete-stack --stack-name udapeople-frontend-${OldWorkflowID:10:12}
+            else
+              echo "-----Nothing to cleanup------"
             fi
-
 
 workflows:
   default:
