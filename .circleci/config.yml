@@ -24,7 +24,7 @@ commands:
                 echo "Starting to revert migration"
                 cd ~/project/backend
                 npm install
-                npm run migration:revert
+                npm run migrations:revert
             fi  
             echo "Finished to revert migration"
   destroy-environment:
