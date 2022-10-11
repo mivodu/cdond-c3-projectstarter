@@ -19,7 +19,7 @@ commands:
           command: |
             SUCCESS=$(curl --insecure  https://kvdb.io/VQTw3DojLtJnPDvyMbJvym/migration_<< parameters.workflow_id >>)
             echo "SUCCESS = ${SUCCESS}"
-            if (( $SUCCESS == 1 ))
+            if [[ $SUCCESS == 1 ]]
             then
                 echo "Starting to revert migration"
                 cd ~/project/backend
