@@ -348,9 +348,9 @@ jobs:
       - run:
           name: Update cloudfront distribution
           command: |
-            export OldWorkflowID=$(aws cloudformation list-exports 
+            export OldWorkflowID=$(aws cloudformation list-exports \
               --query "Exports[?Name==\`WorkflowID\`].Value" \
-              --no-paginate 
+              --no-paginate \
               --output text)
             echo $OldWorkflowID > ~/project/OldWorkflowID.txt
             echo "Old workflow id: $OldWorkflowID"
