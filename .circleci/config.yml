@@ -18,7 +18,7 @@ commands:
           when: on_fail
           command: |
             SUCCESS=$(curl --insecure  https://kvdb.io/VQTw3DojLtJnPDvyMbJvym/migration_<< parameters.workflow_id >>)
-            if (( $SUCCESS == 1 ));
+            if (( $SUCCESS == 1 ))
             then
                 cd ~/project/backend
                 npm install
@@ -290,10 +290,10 @@ jobs:
           paths:
             - project/artifact.tar.gz
             - project/backend/.env
-      #- destroy-environment:
-      #    workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
-      #- revert-migrations:
-      #    workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
   smoke-test:
     docker:
